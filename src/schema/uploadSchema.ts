@@ -21,9 +21,9 @@ export const UploadSchema = z.object({
         .refine((file) => file == null || file.size <= MAX_FILE_SIZE, {
         message: "Le fichier est trop volumineux (max 20MB)",
         })
-        .refine((file) => file == null || ACCEPTED_TYPES.includes(file.type), {
-        message: "Type de fichier non supporté",
-        }),
+        // .refine((file) => file == null || ACCEPTED_TYPES.includes(file.type), {
+        // message: "Type de fichier non supporté",
+        // }),
 });
 
 export type IUpload = z.infer<typeof UploadSchema>;
