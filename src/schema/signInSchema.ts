@@ -9,7 +9,7 @@ export const SignInSchema = z.object({
     password: z
         .string()
         .min(8, "Le mot de passe doit contenir au moins 8 caractères")
-        .max(16, "Le mot de passe ne peut pas dépasser 16 caractères"),
+        .max(32, "Le mot de passe ne peut pas dépasser 32 caractères"),
 });
 
 export type ISignIn = z.infer<typeof SignInSchema>;
