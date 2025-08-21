@@ -106,6 +106,7 @@ export const SingInForm = () => {
                             }
                             className="w-full rounded-md border border-gray-700 bg-transparent py-2 px-3 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition"
                             placeholder="Mot de passe"
+                            type='password'
                             value={state.value}
                             onBlur={handleBlur}
                             onChange={(e) => handleChange(e.target.value)}
