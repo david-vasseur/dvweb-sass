@@ -15,7 +15,7 @@ export default function UploadPage() {
                 <h1 className='font-black text-3xl text-center text-purple-400'>
                     Bonjour {user?.firstName}
                 </h1>
-                <h2 className="font-black text-3xl text-center">
+                <h2 className="font-black text-3xl text-center text-white/80">
                     Formulaire pour ajouter un fichier à votre projet
                 </h2>
                 <UploadForm />

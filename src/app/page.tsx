@@ -12,7 +12,7 @@ export default function Home() {
 		<div className="container mx-auto flex flex-col gap-20 justify-center items-center font-sans min-h-screen">
 			<SignedOut>
 				<>
-					<h1 className="font-black text-3xl">Merci de vous connecter</h1>
+					<h1 className="font-black text-3xl text-white/80">Merci de vous connecter</h1>
 					<SingInForm />
 				</>
 			</SignedOut>
