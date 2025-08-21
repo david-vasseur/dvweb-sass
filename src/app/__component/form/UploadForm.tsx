@@ -6,6 +6,7 @@ import { Send, Upload } from "lucide-react";
 import { useModalStore } from "@/lib/stores/modalStore";
 import { IUpload, UploadSchema } from "@/schema/uploadSchema";
 import { uploadFile } from './uploadFile.action';
+import heic2any from 'heic2any';
 
 export const UploadForm = () => {
 
@@ -35,6 +36,30 @@ export const UploadForm = () => {
             }
         },
     })
+
+    const handleFileChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+        handleChange: (file: File) => void
+    ) => {
+            let file = e.target.files ? e.target.files[0] : null;
+            if (!file) return;
+
+            if (file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif")) {
+                const blobOrArray = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.9,
+                });
+
+                const blob = Array.isArray(blobOrArray) ? blobOrArray[0] : blobOrArray;
+
+                file = new File([blob], file.name.replace(/\.(heic|heif)$/i, ".jpg"), {
+                    type: "image/jpeg",
+                });
+            }
+
+            handleChange(file);
+        };
 
 
     return (
@@ -94,10 +119,7 @@ export const UploadForm = () => {
                         className="w-full rounded-md border border-gray-700 bg-transparent py-2 px-3 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition"
                         placeholder="Cliquer pour charger un fichier"
                         onBlur={handleBlur}
-                        onChange={(e) => {
-                        const file = e.target.files ? e.target.files[0] : null;
-                        handleChange(file);
-                        }}
+                        onChange={(e) => handleFileChange(e, handleChange)}
                     />
                     {state.meta.errors.length > 0 && state.meta.isTouched ? (
                         <p className="text-red-500 font-semibold text-xs">
