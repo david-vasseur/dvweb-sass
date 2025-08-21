@@ -3,6 +3,8 @@
 import { Storage } from "@google-cloud/storage";
 import path from "path";
 import sharp from "sharp";
+import bucketMappingJson from '../../../data/bucket.json';
+import { auth } from "@clerk/nextjs/server";
 
 const serviceKeyPath = path.join(process.cwd(), "dvweb-469712-4f84557634a2.json");
 
@@ -11,9 +13,19 @@ const storage = new Storage({
   projectId: "dvweb-469712",
 });
 
-const bucket = storage.bucket("gvs3d");
-
 export async function uploadFile(file: File, name: string) {
+
+    const { userId } = await auth();
+
+    if (!userId) {
+        return { success: false, message: "Une erreur s'est produit lors de l'upload" }
+    }
+
+    const bucketMapping : Record<string, string> = bucketMappingJson;
+
+    const bucketName = bucketMapping[userId]
+
+    const bucket = storage.bucket(bucketName)
  
   const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -31,6 +43,6 @@ export async function uploadFile(file: File, name: string) {
     resumable: false,
   });
 
-  return `gs://${bucket.name}/${name}`;
+  return { success: true, message: "Upload du fichier reussi avec succès" }
 }
 

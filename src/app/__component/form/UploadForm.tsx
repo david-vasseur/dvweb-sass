@@ -26,14 +26,9 @@ export const UploadForm = () => {
                 return
             }
 
-            const url = await uploadFile(value.file, value.name);
-            console.log(url);
+            const response = await uploadFile(value.file, value.name);
 
-            if (url === `gs://gvs3d/${value.name}`) {
-                openModal('Upload reussi avec succès');
-            } else {
-                openModal("Une erreur s'est produit lors de l'upload");
-            }
+            openModal(response.message);
         },
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

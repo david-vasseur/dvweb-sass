@@ -45,3 +45,4 @@ next-env.d.ts
 
 # gcs
 dvweb-469712-4f84557634a2.json
+/src/data/bucket.json
