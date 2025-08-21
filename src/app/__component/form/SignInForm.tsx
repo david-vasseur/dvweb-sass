@@ -36,6 +36,7 @@ export const SingInForm = () => {
                     openModal('Connexion reussi');
                     window.location.href= "/";
                 } 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 if (error.errors && error.errors[0]?.longMessage) {
                     openModal("Identifiant ou Mot de passe incorrect");
@@ -67,7 +68,7 @@ export const SingInForm = () => {
                         viewport={{ once: true }}
                         transition={{ delay: 0.7 + 1 * 0.1, duration: 0.4 }}
                     >
-                        <label className="sr-only">Nom d'utilisateur</label>
+                        <label className="sr-only">Nom d&apos;utilisateur</label>
                         <input 
                             aria-invalid={
                                 state.meta.errors.length > 0 && state.meta.isTouched
