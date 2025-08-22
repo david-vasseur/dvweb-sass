@@ -38,26 +38,26 @@ export const UploadForm = () => {
         e: React.ChangeEvent<HTMLInputElement>,
         handleChange: (file: File) => void
         ) => {
-        let file = e.target.files ? e.target.files[0] : null;
-        if (!file) return;
+            let file = e.target.files ? e.target.files[0] : null;
+            if (!file) return;
 
-        if (file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif")) {
-            if (!heic2any) {
-            heic2any = (await import("heic2any")).default;
+            if (file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif")) {
+                if (!heic2any) {
+                heic2any = (await import("heic2any")).default;
+                }
+
+                const blobOrArray = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.9,
+                });
+
+                const blob = Array.isArray(blobOrArray) ? blobOrArray[0] : blobOrArray;
+
+                file = new File([blob], file.name.replace(/\.(heic|heif)$/i, ".jpg"), {
+                type: "image/jpeg",
+                });
             }
-
-            const blobOrArray = await heic2any({
-            blob: file,
-            toType: "image/jpeg",
-            quality: 0.9,
-            });
-
-            const blob = Array.isArray(blobOrArray) ? blobOrArray[0] : blobOrArray;
-
-            file = new File([blob], file.name.replace(/\.(heic|heif)$/i, ".jpg"), {
-            type: "image/jpeg",
-            });
-        }
 
         handleChange(file);
     };

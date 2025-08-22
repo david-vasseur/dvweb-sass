@@ -9,8 +9,8 @@ import { auth } from "@clerk/nextjs/server";
 const serviceKeyPath = path.join(process.cwd(), "dvweb-469712-4f84557634a2.json");
 
 const storage = new Storage({
-  keyFilename: serviceKeyPath,
-  projectId: "dvweb-469712",
+	keyFilename: serviceKeyPath,
+	projectId: "dvweb-469712",
 });
 
 export async function uploadFile(file: File, name: string) {
@@ -27,22 +27,31 @@ export async function uploadFile(file: File, name: string) {
 
     const bucket = storage.bucket(bucketName)
  
-  const buffer = Buffer.from(await file.arrayBuffer());
+	const buffer = Buffer.from(await file.arrayBuffer());
 
-  const processedBuffer = await sharp(buffer)
-    .webp({ quality: 90 }) 
-    .withMetadata({ exif: undefined })   
-    .toBuffer();
+	if (!file.type.startsWith("image/")) {
+		const fileUpload = bucket.file(name);
+		await fileUpload.save(buffer, {
+			contentType: file.type, 
+			resumable: false,
+		});
+		return { success: true, message: "Upload du fichier réussi avec succès" };
+	}
 
-  const timestamp = Date.now();
-  const uniqueName = `${name}-${timestamp}.webp`;
+	const processedBuffer = await sharp(buffer)
+		.webp({ quality: 90 }) 
+		.withMetadata({ exif: undefined })   
+		.toBuffer();
 
-  const fileUpload = bucket.file(uniqueName);
-  await fileUpload.save(processedBuffer, {
-    contentType: "image/webp",
-    resumable: false,
-  });
+	const timestamp = Date.now();
+	const uniqueName = `${name}-${timestamp}.webp`;
 
-  return { success: true, message: "Upload du fichier reussi avec succès" }
+	const fileUpload = bucket.file(uniqueName);
+	await fileUpload.save(processedBuffer, {
+		contentType: "image/webp",
+		resumable: false,
+	});
+
+	return { success: true, message: "Upload du fichier reussi avec succès" }
 }
 
