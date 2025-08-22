@@ -29,12 +29,20 @@ export async function uploadFile(file: File, name: string) {
  
 	const buffer = Buffer.from(await file.arrayBuffer());
 
+	const timestamp = Date.now();
+
 	if (!file.type.startsWith("image/")) {
-		const fileUpload = bucket.file(name);
-		await fileUpload.save(buffer, {
-			contentType: file.type, 
-			resumable: false,
-		});
+		const fileUpload = bucket.file(`${name}-${timestamp}`);
+		try {
+			await fileUpload.save(buffer, {
+				contentType: file.type, 
+				resumable: false,
+			});
+			
+		} catch (error) {
+			return { success: false, message: "Une erreur s'est produit lors de l'upload" }
+		}
+		
 		return { success: true, message: "Upload du fichier réussi avec succès" };
 	}
 
@@ -43,15 +51,19 @@ export async function uploadFile(file: File, name: string) {
 		.withMetadata({ exif: undefined })   
 		.toBuffer();
 
-	const timestamp = Date.now();
+	
 	const uniqueName = `${name}-${timestamp}.webp`;
 
 	const fileUpload = bucket.file(uniqueName);
-	await fileUpload.save(processedBuffer, {
-		contentType: "image/webp",
-		resumable: false,
-	});
-
+	try {
+		await fileUpload.save(processedBuffer, {
+			contentType: "image/webp",
+			resumable: false,
+		});
+	} catch (error) {
+		return { success: false, message: "Une erreur s'est produit lors de l'upload" }
+	}
+	
 	return { success: true, message: "Upload du fichier reussi avec succès" }
 }
 
